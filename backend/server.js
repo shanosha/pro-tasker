@@ -1,4 +1,6 @@
+import 'dotenv/config'
 import express, { json } from 'express'
+import './config/connection.js'
 import cors from 'cors'
 
 const app = express()
