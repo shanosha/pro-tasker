@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 
 const taskSchema = new Schema({
-    name: {
+    title: {
         type: String,
         required: true,
         trim: true
