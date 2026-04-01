@@ -32,11 +32,15 @@ function Dashboard() {
             <h1>Dashboard</h1>
             <p>Welcome {user.username}!</p>
             
-            <h2>Projects</h2>
+            <h2>Projects ({projects.length})</h2>
             <ProjectForm setProjects={setProjects} />
-            <ul>
-                {projects.map(project => <Project key={project._id} project={project} setProjects={setProjects} />)}
-            </ul>
+            {projects.length>0 ?
+                <ul>
+                    {projects.map(project => <Project key={project._id} project={project} setProjects={setProjects} />)}
+                </ul>
+                :
+                <p>You don't currently have any projects.</p>
+            }
         </>
     )
 }
