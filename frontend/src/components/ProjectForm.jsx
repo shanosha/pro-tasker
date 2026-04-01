@@ -96,21 +96,23 @@ function ProjectForm({ setProjects }) {
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="contributors">Collaborators:</label>
+                    <fieldset>
+                        <legend>Collaborators:</legend>
+                        
                     {users.map(user => (
                     <div key={user._id}>
-                        <label>
+                            <label htmlFor={`collaborators_${user._id}`}>
                         <input
                             type="checkbox"
-                            id={user._id}
+                                id={`collaborators_${user._id}`}
                             value={user._id}
                             checked={collaborators.includes(user._id)}
                             onChange={(e) => handleCheckboxChange(e)}
                         />
-                        {user.username}
-                        </label>
+                            {user.username}</label>
                     </div>
                     ))}
+                    </fieldset>
                 </div>
 
                 <button>Submit</button>
