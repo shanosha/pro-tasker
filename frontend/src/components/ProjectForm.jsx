@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react"
 import { projectClient, userClient } from "../clients/api"
 import { useUser } from "../context/UserContext";
+import { useForm } from "../hook/useForm";
 
 function ProjectForm({ setProjects }) {
-
-    const [form, setForm] = useState({ name: '', description: '' })
-    const [users, setUsers] = useState([])
-    const [collaborators, setCollaborators] = useState([])
     const { user } = useUser()
+    const [ users, setUsers ] = useState([])
+    const {
+            showForm,
+            setShowForm,
+            form,
+            collaborators,
+            handleCheckboxChange,
+            resetForm,
+            handleChange
+    } = useForm('project')
     
     useEffect(() => {
         if(user && user._id !== undefined){
@@ -29,26 +36,6 @@ function ProjectForm({ setProjects }) {
         }
     }, [user])
 
-    const handleCheckboxChange = (e) => {
-        const userId = e.target.value
-
-        if (e.target.checked) {
-            // Add user
-            setCollaborators(prev => [...prev, userId]);
-        } else {
-            // Remove user
-            setCollaborators(prev => prev.filter(id => id !== userId))
-        }
-    }
-    
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -59,8 +46,7 @@ function ProjectForm({ setProjects }) {
             setProjects(prev => [...prev, data])
             
             // clear the form fields
-            setForm({ name: '', description: '' })
-            setCollaborators([])
+            resetForm()
         }
         catch(err) {
             console.dir(err)
@@ -70,55 +56,60 @@ function ProjectForm({ setProjects }) {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+            {showForm ?
+                <form onSubmit={handleSubmit}>
 
-                <div className="form-row">
-                    <label htmlFor="name">Name:</label>
-                    <input
-                        value={form.name}
-                        onChange={handleChange}
-                        id="name"
-                        name="name"
-                        type="text"
-                        autoComplete="off"
-                        required
-                    />
-                </div>
+                    <div className="form-row">
+                        <label htmlFor="name">Name:</label>
+                        <input
+                            value={form.name}
+                            onChange={handleChange}
+                            id="name"
+                            name="name"
+                            type="text"
+                            autoComplete="off"
+                            required
+                        />
+                    </div>
 
-                <div className="form-row">
-                    <label htmlFor="description">Description:</label>
-                    <textarea
-                        value={form.description}
-                        onChange={handleChange}
-                        id="description"
-                        name="description"
-                        required
-                    />
-                </div>
+                    <div className="form-row">
+                        <label htmlFor="description">Description:</label>
+                        <textarea
+                            value={form.description}
+                            onChange={handleChange}
+                            id="description"
+                            name="description"
+                            required
+                        />
+                    </div>
 
-                <div className="form-row">
-                    <fieldset>
-                        <legend>Collaborators:</legend>
-                        
-                        {users.map(user => (
-                        <div key={user._id}>
-                            <label htmlFor={`collaborators_${user._id}`}>
-                            <input
-                                type="checkbox"
-                                id={`collaborators_${user._id}`}
-                                value={user._id}
-                                checked={collaborators.includes(user._id)}
-                                onChange={(e) => handleCheckboxChange(e)}
-                            />
-                            {user.username}</label>
-                        </div>
-                        ))}
-                    </fieldset>
-                </div>
+                    <div className="form-row">
+                        <fieldset>
+                            <legend>Collaborators:</legend>
+                            
+                            {users.map(user => (
+                            <div key={user._id}>
+                                <label htmlFor={`collaborators_${user._id}`}>
+                                <input
+                                    type="checkbox"
+                                    id={`collaborators_${user._id}`}
+                                    value={user._id}
+                                    checked={collaborators.includes(user._id)}
+                                    onChange={(e) => handleCheckboxChange(e)}
+                                />
+                                {user.username}</label>
+                            </div>
+                            ))}
+                        </fieldset>
+                    </div>
 
-                <button>Submit</button>
+                    <button type="submit">Submit</button>
+                    <button type="reset" onClick={resetForm}>Cancel</button>
 
-            </form>
+                </form>
+                :
+                <button onClick={()=>setShowForm(!showForm)}>Add Project</button>
+            }
         </>
     )
 }
