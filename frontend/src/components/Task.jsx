@@ -1,9 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { taskClient, projectClient } from "../clients/api"
 import { useUser } from "../context/UserContext"
 import { isProjectOwner } from "../utils/projectAuth"
 import TaskForm from "./TaskForm"
-import { useState } from "react"
 
 function Task({ task, setTasks }) {
 
