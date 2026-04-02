@@ -6,11 +6,12 @@ import Task from "../components/Task"
 import TaskForm from "../components/TaskForm"
 import { useUser } from "../context/UserContext"
 import { isProjectOwner } from "../utils/projectAuth"
+import ProjectForm from "../components/ProjectForm"
 
 function ProjectDetail() {
     const { user } = useUser()
     const { projectId } = useParams()
-    const [ project, setProject ] = useState({})
+    const [ project, setProject ] = useState(null)
     const [ tasks, setTasks ] = useState([])
 
     useEffect(() => {
@@ -38,39 +39,48 @@ function ProjectDetail() {
         getTaskData()
     }, [])
 
-    const isOwner = isProjectOwner(project.owner,user._id)
-
     return (
         <>
-            <h1>{project.name}</h1>
+            {project &&
+            <>
+                <h1>{project.name}</h1>
 
-            <section id="project-details">
-                <p>Description: {project.description}</p>
-                <p>Permissions:
-                    {isOwner ?
-                        <> You are the owner of this project, and have full permissions.</>
+                <section id="project-details">
+                    <p>Description: {project.description}</p>
+                    <p>Created: {new Date(project.createdAt).toLocaleDateString()}</p>
+                    <p>Owner: {project.owner.username}</p>
+                    <p>Collaborators:
+                    {project.collaborators.length>0 ?
+                        <> {project.collaborators.map(user => user.username).join(", ")}</>
                         :
-                        <> You are a collaborator and only have access to update task status.</>
+                        <> None</>
                     }
-                </p>
-                <p>Collaborators:
-                {(project.collaborators && project.collaborators.length>1) ?
-                    <> {project.collaborators.map(user => user.username).join(", ")}</>
-                    :
-                    <> None</>
-                }
-                </p>
-            </section>
+                    </p>
+                    <p>Permissions:
+                        {isProjectOwner(project.owner,user._id) ?
+                            <> You are the owner of this project, and have full permissions.</>
+                            :
+                            <> You are a collaborator and only have access to update task status.</>
+                        }
+                    </p>
+                    {isProjectOwner && 
+                        <div className="buttons">
+                            <ProjectForm setProjects={setProject} project={project} btnText={'Update Project'} headingText={'Update Project'} />
+                            <TaskForm projectId={projectId} setTasks={setTasks} btnText={'Add Task'} headingText={'Add New Task'} />
+                        </div>
+                    }
+                </section>
 
-            <section id="project-tasks">
-                <h2>Project Tasks</h2>
-                {isOwner && <TaskForm projectId={projectId} setTasks={setTasks} />}
-                {tasks.length > 0 ?
-                    tasks.map(task => <Task key={task._id} task={task} setTasks={setTasks} />)
-                    :
-                    <p>Currently no tasks assigned to this project.</p>
-                }
-            </section>
+                <section id="project-tasks">
+                    <h2>Tasks</h2>
+                    {tasks.length > 0 ?
+                        tasks.map(task => <Task key={task._id} task={task} setTasks={setTasks} />)
+                        :
+                        <p>Currently no tasks assigned to this project.</p>
+                    }
+                </section>
+            </>
+            }
         </>
     )
 }

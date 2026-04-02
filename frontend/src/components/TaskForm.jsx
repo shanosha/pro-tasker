@@ -1,23 +1,40 @@
-import { projectClient } from "../clients/api"
+import { useEffect } from "react"
+import { projectClient, taskClient } from "../clients/api"
 import { useForm } from "../hook/useForm"
 import './Modal/Modal.css'
 
-function TaskForm({ projectId, setTasks }) {
+function TaskForm({ projectId, setTasks, task, btnText = '+', headingText = 'Task'  }) {
     const {
         modal,
         toggleModal,
         form,
+        setForm,
         resetForm,
         handleChange
-    } = useForm('task')
+    } = useForm('task',task)
+    
+    useEffect(() => {
+        if(task) {
+            setForm(task)
+        }
+    }, [task])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            // send the form data to our backend
-            const { data } = await projectClient.post(`/${projectId}/tasks`, form)
-            setTasks(prev => [...prev, data])
-            resetForm()
+
+            if(task){
+                // send the form data to our backend
+                const { data } = await taskClient.put(`/${task._id}`, form)
+                setTasks(prev => prev.map(task => task._id === data._id ? data : task))
+                resetForm(data)
+            }
+            else {
+                // send the form data to our backend
+                const { data } = await projectClient.post(`/${projectId}/tasks`, form)
+                setTasks(prev => [...prev, data])
+                resetForm()
+            }
             
         }
         catch(err) {
@@ -28,13 +45,17 @@ function TaskForm({ projectId, setTasks }) {
 
     return (
         <>
-            <button onClick={toggleModal}>Add Task</button>
+            <button onClick={toggleModal}>{btnText}</button>
 
             {modal &&
                 <div className="modal">
                     <div className="overlay" onClick={toggleModal}></div>
                     <div className="modal-content">
+
                         <button onClick={toggleModal}>Close</button>
+
+                        <h3>{headingText}</h3>
+
                         <form onSubmit={handleSubmit}>
 
                             <div className="form-row">
@@ -77,7 +98,7 @@ function TaskForm({ projectId, setTasks }) {
                             </div>
 
                             <button type="submit">Submit</button>
-                            <button type="reset" onClick={resetForm}>Cancel</button>
+                            <button type="reset" onClick={()=>resetForm()}>Cancel</button>
 
                         </form>
                     </div>

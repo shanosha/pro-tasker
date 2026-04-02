@@ -12,12 +12,11 @@ router.use(authMiddleware)
 // POST /api/projects - Create a new project
 router.post("/", async (req, res) => {
   try {
-    const project = await Project.create({
+    let project = await Project.create({
       ...req.body,
       owner: req.user._id,
     })
-    await project
-      .populate(['owner','collaborators'],'username')
+    await project.populate(['owner','collaborators'],'username')
     res.status(201).json(project)
   } catch (err) {
     res.status(400).json(err)
@@ -33,7 +32,7 @@ router.get("/", async (req, res) => {
         { collaborators: req.user._id }
       ]
     })
-      .populate('owner','username')
+      .populate(['owner','collaborators'],'username')
     res.json(projects)
   } catch (err) {
     res.status(500).json(err)
@@ -44,7 +43,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('collaborators','username')
+      .populate(['owner','collaborators'],'username')
     if (!project) {
       return res
         .status(404)
@@ -81,6 +80,7 @@ router.put("/:id", async (req, res) => {
       req.body,
       { returnDocument: 'after', runValidators: true },
     )
+      .populate(['owner','collaborators'],'username')
     res.json(updatedProject)
   } catch (err) {
     res.status(500).json(err)

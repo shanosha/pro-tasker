@@ -31,7 +31,7 @@ function Dashboard() {
             <h1>Dashboard</h1>
             <p>Welcome {user.username}!</p>
 
-            <ProjectForm setProjects={setProjects} />
+            <ProjectForm setProjects={setProjects} btnText={'Add Project'} headingText={'Add New Project'} />
             
             <h2>My Projects ({projects.length})</h2>
             {projects.length>0 ?

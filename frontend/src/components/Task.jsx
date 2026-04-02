@@ -1,4 +1,5 @@
 import { taskClient } from "../clients/api"
+import TaskForm from "./TaskForm"
 
 function Task({ task, setTasks }) {
 
@@ -22,7 +23,7 @@ function Task({ task, setTasks }) {
             <p>{task.description}</p>
 
             <div className="form-row">
-                <label htmlFor="status">Status:</label>
+                <label>Status:
                 <select
                     value={task.status}
                     onChange={handleChange}
@@ -34,6 +35,11 @@ function Task({ task, setTasks }) {
                     <option value="In Progress">In Progress</option>
                     <option value="Done">Done</option>
                 </select>
+                </label>
+            </div>
+
+            <div className="buttons">
+                <TaskForm projectId={task.project} task={task} setTasks={setTasks} btnText={'Edit'} headingText={'Edit Task'} />
             </div>
         </>
     )

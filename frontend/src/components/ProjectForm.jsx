@@ -4,18 +4,20 @@ import { useUser } from "../context/UserContext";
 import { useForm } from "../hook/useForm";
 import './Modal/Modal.css'
 
-function ProjectForm({ setProjects }) {
+function ProjectForm({ project, setProjects, btnText = '+', headingText = 'Project' }) {
     const { user } = useUser()
     const [ users, setUsers ] = useState([])
     const {
             modal,
             toggleModal,
             form,
+            setForm,
             collaborators,
+            setCollaborators,
             handleCheckboxChange,
             resetForm,
             handleChange
-    } = useForm('project')
+    } = useForm('project',project)
     
     useEffect(() => {
         if(user && user._id !== undefined){
@@ -48,20 +50,50 @@ function ProjectForm({ setProjects }) {
         return () => document.body.classList.remove('active-modal')
     }, [modal])
 
+    useEffect(() => {
+        if(project) {
+            setForm(project)
+            setCollaborators(project.collaborators.map(callaborator => callaborator._id))
+        }
+    }, [project])
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            // send the form data to our backend
-            const { data } = await projectClient.post('/', {...form, collaborators: collaborators})
+
+            if(project) {
+            // if updating existing project
+
+                // send the form data to our backend
+                const { data } = await projectClient.put(`/${project._id}`, {...form, collaborators: collaborators})
+                
+                // update the projects state
+                setProjects(prev => {
+                    // check if the state is an array of projects of a single project
+                    return Array.isArray(prev) ?
+                    prev.map(proj => proj._id === data._id ? data : proj )
+                    :
+                    data
+                })
+                
+                // reset the form fields
+                resetForm(data)
+            }
+            else {
+            // else, if adding new project
+
+                // send the form data to our backend
+                const { data } = await projectClient.post('/', {...form, collaborators: collaborators})
             
-            // update the projects state
-            setProjects(prev => [...prev, data])
-            
-            // clear the form fields
-            resetForm()
+                // update the projects state
+                setProjects(prev => [...prev, data])
+                
+                // reset the form fields
+                resetForm()
+            }
 
             // close the modal
-            toggleModal(false)
+            toggleModal()
         }
         catch(err) {console.log(form)
             console.dir(err)
@@ -69,16 +101,23 @@ function ProjectForm({ setProjects }) {
         }
     }
 
+    // const btnText = project ? 'Update' : 'Add Project'
+    // const headingText = project ? 'Update Project' : 'Add New Project'
+
     return (
         <>
-            <button onClick={toggleModal}>Add Project</button>
+            <button onClick={toggleModal}>{btnText}</button>
 
             {
                 modal && 
                 <div className="modal">
                     <div className="overlay" onClick={toggleModal}></div>
                     <div className="modal-content">
+
                         <button onClick={toggleModal}>Close</button>
+
+                        <h3>{headingText}</h3>
+
                         <form onSubmit={handleSubmit}>
 
                             <div className="form-row">
@@ -126,7 +165,7 @@ function ProjectForm({ setProjects }) {
                             </div>
 
                             <button type="submit">Submit</button>
-                            <button type="reset" onClick={resetForm}>Cancel</button>
+                            <button type="reset" onClick={()=>resetForm()}>Cancel</button>
 
                         </form>
                     </div>
