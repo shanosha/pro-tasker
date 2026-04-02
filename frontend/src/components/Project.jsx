@@ -3,6 +3,7 @@ import { projectClient } from "../clients/api"
 import { useEffect } from "react"
 import { useState } from "react"
 import ProjectForm from "./ProjectForm"
+import ProgressBar from "./ProgressBar/ProgressBar"
 
 function Project({ project, setProjects, isOwner }) {
     const [tasks, setTasks] = useState([])
@@ -34,6 +35,9 @@ function Project({ project, setProjects, isOwner }) {
         }
     }
 
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.length>0 ? tasks.filter(task => task.status === 'Done').length : tasks.length
+
     return (
         <>
             <li>
@@ -58,6 +62,7 @@ function Project({ project, setProjects, isOwner }) {
                         </>
                     }
                 </div>
+                <ProgressBar total={totalTasks} completed={completedTasks} />
             </li>
         </>
     )

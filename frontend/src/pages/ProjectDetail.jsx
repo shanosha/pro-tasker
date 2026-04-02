@@ -7,6 +7,7 @@ import TaskForm from "../components/TaskForm"
 import { useUser } from "../context/UserContext"
 import { isProjectOwner } from "../utils/projectAuth"
 import ProjectForm from "../components/ProjectForm"
+import ProgressBar from "../components/ProgressBar/ProgressBar"
 
 function ProjectDetail() {
     const { user } = useUser()
@@ -39,6 +40,9 @@ function ProjectDetail() {
         getTaskData()
     }, [])
 
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.length>0 ? tasks.filter(task => task.status === 'Done').length : tasks.length
+
     return (
         <>
             {project &&
@@ -69,6 +73,7 @@ function ProjectDetail() {
                             <TaskForm projectId={projectId} setTasks={setTasks} btnText={'Add Task'} headingText={'Add New Task'} />
                         </div>
                     }
+                    <ProgressBar total={totalTasks} completed={completedTasks} />
                 </section>
 
                 <section id="project-tasks">
