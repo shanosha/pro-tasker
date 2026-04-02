@@ -30,24 +30,28 @@ function Dashboard() {
         <>
             <h1>Dashboard</h1>
             <p>Welcome {user.username}!</p>
-
-            <ProjectForm setProjects={setProjects} btnText={'Add Project'} headingText={'Add New Project'} />
             
-            <h2>My Projects ({projects.length})</h2>
-            {projects.length>0 ?
-                <ul>
-                    {projects.map(project =>
-                        <Project
-                            key={project._id}
-                            project={project}
-                            setProjects={setProjects}
-                            isOwner={isProjectOwner(project.owner,user._id)}
-                        />
-                    )}
-                </ul>
-                :
-                <p>You don't own any projects.</p>
-            }
+            <div className="buttons">
+                <ProjectForm setProjects={setProjects} btnText={'Add Project'} headingText={'Add New Project'} />
+            </div>
+            
+            <section>
+                <h2>My Projects ({projects.length})</h2>
+                {projects.length>0 ?
+                    <ul>
+                        {projects.map(project =>
+                            <Project
+                                key={project._id}
+                                project={project}
+                                setProjects={setProjects}
+                                isOwner={isProjectOwner(project.owner,user._id)}
+                            />
+                        )}
+                    </ul>
+                    :
+                    <p>You don't own any projects.</p>
+                }
+            </section>
         </>
     )
 }

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { useUser } from "../context/UserContext"
+import ThemeToggle from "./ThemeToggler"
 
 function Navbar() {
 
@@ -13,6 +14,7 @@ function Navbar() {
                         <>
                             <li><Link to="/dashboard">Dashboard</Link></li>
                             <li onClick={logout}><Link to="/login">Logout</Link></li>
+                            <li><ThemeToggle /></li>
                         </>
                         :
                         <>
