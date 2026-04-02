@@ -48,7 +48,7 @@ function ProjectDetail() {
                 <p>Description: {project.description}</p>
                 <p>Permissions:
                     {isOwner ?
-                        <> You the owner of this project, and have full permissions.</>
+                        <> You are the owner of this project, and have full permissions.</>
                         :
                         <> You are a collaborator and only have access to update task status.</>
                     }
