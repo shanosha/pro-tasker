@@ -83,6 +83,7 @@ function Register() {
                         id="password"
                         name="password"
                         type="password"
+                        minLength="5"
                         autoComplete="new-password"
                         required
                     />
