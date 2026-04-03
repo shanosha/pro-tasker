@@ -62,7 +62,7 @@ function ProjectDetail() {
         <>
             {project &&
             <>
-                <h1>Project: {project.name}</h1>
+                <h1>Project: <span className="project-name">{project.name}</span></h1>
 
                 <section id="project-details">
                     <p><span className="label">Description:</span> {project.description}</p>

@@ -35,7 +35,7 @@ function Dashboard() {
     return (
         <>
             <h1>Dashboard</h1>
-            <p>Welcome {user.username}!</p>
+            <p>Welcome {user.username}! Create projects, tasks, and collaborate with others.</p>
             
             <div className="buttons">
                 <ProjectForm setProjects={setProjects} btnText={'Add Project'} headingText={'Add New Project'} />
