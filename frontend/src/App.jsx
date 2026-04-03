@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
 import { useUser } from './context/UserContext'
 import ProjectDetail from './pages/ProjectDetail'
+import Loading from './components/Loading/Loading'
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
   return (
     <>
       <Navbar />
+      <Loading />
       <main>
         {user ?
           <Routes>
