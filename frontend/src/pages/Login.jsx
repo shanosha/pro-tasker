@@ -92,7 +92,7 @@ function Login() {
     }
 
     return (
-        <section>
+        <section className="bg">
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
 

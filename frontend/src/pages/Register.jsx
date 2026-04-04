@@ -53,7 +53,7 @@ function Register() {
     }
 
     return (
-        <section>
+        <section className="bg">
             <h1>Register</h1>
             <form onSubmit={handleSubmit}>
                 <div className="form-row">

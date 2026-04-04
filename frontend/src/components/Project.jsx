@@ -51,8 +51,8 @@ function Project({ project, setProjects, isOwner }) {
     return (
         <>
             <li className="card">
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
+                <h3><Link to={`/project/${project._id}`}>{project.name}</Link></h3>
+                <p><span class="label">Description:</span> {project.description}</p>
                 <div className="details">
                     <p><span class="label">Owner:</span> {project.owner.username}</p>
                     {
