@@ -7,6 +7,7 @@ import { useUser } from './context/UserContext'
 import ProjectDetail from './pages/ProjectDetail'
 import Loading from './components/Loading/Loading'
 import ThemeToggle from "./components/ThemeToggler"
+import Profile from './pages/Profile'
 
 function App() {
 
@@ -20,11 +21,12 @@ function App() {
         {user ?
           <>
             <div className="float-right"><ThemeToggle /></div>
-          <Routes>
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/project/:projectId' element={<ProjectDetail />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
-          </Routes>
+            <Routes>
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/project/:projectId' element={<ProjectDetail />} />
+              <Route path="*" element={<Navigate to="/dashboard" />} />
+            </Routes>
           </>
           :
           <Routes>
